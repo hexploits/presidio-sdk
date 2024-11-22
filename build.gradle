@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.hexploits.oss'
+group = 'com.hexploits.oss.sdk'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -10,6 +10,10 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
