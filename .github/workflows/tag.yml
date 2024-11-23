@@ -1,0 +1,85 @@
+name: Version Tagging
+on:
+  push:
+    branches:
+      - main
+  workflow_call:
+    inputs:
+      branch:
+        description: 'The default branch for this repository'
+        required: true
+        type: string
+
+jobs:
+  tag:
+    if: "!startsWith(github.event.head_commit.message, 'deploy')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: 'main'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          fetch-depth: '0'
+
+      - name: Get last tag
+        id: get_last_tag
+        run: |
+          last_tag=$(git describe --tags --abbrev=0 || echo "0.0.0")
+          echo "last_tag=$last_tag" >> $GITHUB_ENV
+
+      - name: Determine version bump
+        id: determine_version
+        run: |
+          commit_message=$(git log -1 --pretty=%B)
+          major=0
+          minor=0
+          patch=0
+
+          case $commit_message in
+            breaking:*)
+              major=1
+              ;;
+            feat:*)
+              minor=1
+              ;;
+            fix:*)
+              patch=1
+              ;;
+            chore:*)
+              patch=1
+              ;;
+            deploy:*|tag:*)
+              echo "Ignoring deploy or tag commit. Exiting."
+              exit 0
+              ;;
+            *)
+              echo "No valid prefix found. Exiting."
+              exit 0
+              ;;
+          esac
+
+          IFS='.' read -r major_version minor_version patch_version <<< "$last_tag"
+          new_major=$((major_version + major))
+          new_minor=$((minor_version + minor))
+          new_patch=$((patch_version + patch))
+
+          if [ "$major" -eq 1 ]; then
+            new_version="$new_major.0.0"
+          elif [ "$minor" -eq 1 ]; then
+            new_version="$major_version.$new_minor.0"
+          else
+            new_version="$major_version.$minor_version.$new_patch"
+          fi
+
+          echo "new_version=$new_version" >> $GITHUB_ENV
+
+      - name: Tag and push new version
+        if: env.new_version != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag $new_version
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} $new_version
