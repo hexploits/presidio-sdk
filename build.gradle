@@ -30,7 +30,7 @@ publishing {
             name = "presidio-sdk"
             url = uri("https://maven.pkg.github.com/hexploits/presidio-sdk")
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GIT_USERNAME")
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
                 password = project.findProperty("gpr.key") ?: System.getenv("GIT_TOKEN")
             }
         }

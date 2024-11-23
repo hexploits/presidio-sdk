@@ -3,7 +3,10 @@ name: Gradle - Build, Test & Publish
 on:
   push:
     branches:
-      - main # Only publish from the main branch
+      - '**'
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   build:
@@ -42,6 +45,7 @@ jobs:
           path: build/libs/*.jar
 
       - name: Publish to GitHub Packages
+        if: github.ref == 'refs/heads/main'
         run: ./gradlew publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
