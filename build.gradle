@@ -1,9 +1,11 @@
 plugins {
-    id 'java'
+//    id 'java'
+    id 'java-library'
+    id 'maven-publish'
 }
 
 group = 'com.hexploits.oss.sdk'
-version = '1.0-SNAPSHOT'
+version = '0.1.0'
 
 repositories {
     mavenCentral()
@@ -20,4 +22,22 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "presidio-sdk"
+            url = uri("https://maven.pkg.github.com/hexploits/presidio-sdk")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GIT_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GIT_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
 }
