@@ -1,0 +1,13 @@
+[
+  {
+    "analysis_explanation": null,
+    "recognition_metadata": {
+      "recognizer_identifier": "recognizerIdentifier",
+      "recognizer_name": "recognizerName"
+    },
+    "entity_type": "field2",
+    "score": 0.5,
+    "start": 1,
+    "end": 2
+  }
+]
