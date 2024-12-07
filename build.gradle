@@ -1,7 +1,7 @@
 plugins {
-//    id 'java'
     id 'java-library'
     id 'maven-publish'
+    id 'jacoco'
 }
 
 group = 'com.hexploits.oss.sdk'
@@ -18,10 +18,23 @@ dependencies {
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mock-server:mockserver-netty:5.15.0'
+    testImplementation 'org.mockito:mockito-core:5.14.2'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.14.2'
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport // Ensures the report is generated after tests run
+}
+
+jacocoTestReport {
+    dependsOn test // Ensures tests run before generating the report
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
 
 publishing {

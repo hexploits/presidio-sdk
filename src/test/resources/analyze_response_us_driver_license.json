@@ -1,0 +1,12 @@
+[
+  {
+    "analysis_explanation": null,
+    "end": 38,
+    "entity_type": "US_DRIVER_LICENSE",
+    "score": 0.6499999999999999,
+    "start": 30,
+    "recognition_metadata": {
+      "recognizer_name": "UsLicenseRecognizer"
+    }
+  }
+]
